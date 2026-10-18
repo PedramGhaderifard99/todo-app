@@ -1,4 +1,5 @@
 import type { Todo } from "./types";
+import { useI18n } from "./i18n/LanguageContext";
 
 interface TodoItemProps {
   todo: Todo;
@@ -7,6 +8,8 @@ interface TodoItemProps {
 }
 
 export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
+  const { t } = useI18n();
+
   return (
     <li className={`todo-item ${todo.completed ? "completed" : ""}`}>
       <label>
@@ -17,8 +20,12 @@ export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
         />
         <span>{todo.text}</span>
       </label>
-      <button className="delete-btn" onClick={() => onDelete(todo.id)}>
-        حذف
+      <button
+        type="button"
+        className="delete-btn"
+        onClick={() => onDelete(todo.id)}
+      >
+        {t.delete}
       </button>
     </li>
   );

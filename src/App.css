@@ -6,14 +6,51 @@
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
   font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, sans-serif;
-  direction: rtl;
-  text-align: right;
+  /* جهت رو از <html dir> می‌گیریم تا با تغییر زبان، چیدمان هم عوض بشه */
+  text-align: start;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 h1 {
   font-size: 1.6rem;
-  margin-bottom: 20px;
+  margin: 0;
   color: #1f3864;
+}
+
+.language-switcher {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 2px;
+  padding: 3px;
+  background: #eef2f3;
+  border-radius: 999px;
+}
+
+.language-switcher button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: #5b666d;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.language-switcher button:hover {
+  color: #0e7c7b;
+}
+
+.language-switcher button.active {
+  background: #0e7c7b;
+  color: #ffffff;
 }
 
 .add-todo {

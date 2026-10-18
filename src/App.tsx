@@ -1,14 +1,22 @@
 import { useState } from "react";
-import type { Todo ,FilterType} from "./types";
+import type { Todo, FilterType } from "./types";
 import { AddTodo } from "./AddTodo";
 import { TodoList } from "./TodoList";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useI18n } from "./i18n/LanguageContext";
 import "./App.css";
+
+// ترتیب دکمه‌های فیلتر؛ کلیدشون همون کلیدهای دیکشنری ترجمه‌ست
+// (all / active / completed)، پس متن دکمه‌ها خودکار ترجمه می‌شه.
+const filters: FilterType[] = ["all", "active", "completed"];
 
 function App() {
   // useState<Todo[]> یعنی: این state همیشه یه آرایه از آبجکت‌های Todo هست.
   // اگه اشتباهی چیز دیگه‌ای (مثلاً یه رشته) بذاری توش، TypeScript موقع نوشتن کد خطا میده.
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [filter,setFilter]= useState<FilterType>("all");
+  const [filter, setFilter] = useState<FilterType>("all");
+  const { t } = useI18n();
+
   function handleAdd(text: string) {
     const newTodo: Todo = {
       id: crypto.randomUUID(),
@@ -33,40 +41,41 @@ function App() {
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
   }
 
-  const remaining = todos.filter((t) => !t.completed).length;
-  const filteredTodos = todos.filter((todo)=>{
+  const remaining = todos.filter((todo) => !todo.completed).length;
+  const filteredTodos = todos.filter((todo) => {
     if (filter === "active") return !todo.completed;
-    if(filter === "completed")return todo.completed;
-    return true;//
-  });     
+    if (filter === "completed") return todo.completed;
+    return true;
+  });
 
   return (
     <div className="app">
-      <h1>لیست کارها</h1>
+      <div className="app-header">
+        <h1>{t.title}</h1>
+        <LanguageSwitcher />
+      </div>
       <AddTodo onAdd={handleAdd} />
       <div className="filters">
-  <button
-    className={filter === "all" ? "active" : ""}
-    onClick={() => setFilter("all")}
-  >
-    همه
-  </button>
-  <button
-    className={filter === "active" ? "active" : ""}
-    onClick={() => setFilter("active")}
-  >
-    باقی‌مونده
-  </button>
-  <button
-    className={filter === "completed" ? "active" : ""}
-    onClick={() => setFilter("completed")}
-  >
-    انجام‌شده
-  </button>
-</div>
-      <TodoList todos={filteredTodos} onToggle={handleToggle} onDelete={handleDelete} />
+        {filters.map((key) => (
+          <button
+            key={key}
+            type="button"
+            className={filter === key ? "active" : ""}
+            aria-pressed={filter === key}
+            onClick={() => setFilter(key)}
+          >
+            {t.filters[key]}
+          </button>
+        ))}
+      </div>
+      <TodoList
+        todos={filteredTodos}
+        hasTodos={todos.length > 0}
+        onToggle={handleToggle}
+        onDelete={handleDelete}
+      />
       {todos.length > 0 && (
-        <p className="footer">{remaining} کار باقی‌مونده از {todos.length}</p>
+        <p className="footer">{t.remaining(remaining, todos.length)}</p>
       )}
     </div>
   );
